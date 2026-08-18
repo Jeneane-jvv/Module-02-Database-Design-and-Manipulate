@@ -1,6 +1,13 @@
 # Project 02 — Database Design and Manipulation
 
 **FirstCommit Data Layer | Relational Modelling, SQL, CRUD, Validation & Read-Only Flask Integration**
+## Live Demo
+
+**[Open FirstCommit Data Studio →](https://firstcommit-data-studio.onrender.com)**
+
+The deployed dashboard reads the validated SQLite database through a controlled read-only Flask data-access layer.
+
+**Deployment checks:** [Health](https://firstcommit-data-studio.onrender.com/health) · [Readiness](https://firstcommit-data-studio.onrender.com/ready)
 
 This repository is the second FirstCommit software-engineering portfolio project. It carries the validated system design from Project 01 into a working SQLite relational database and demonstrates database creation, seeded data, relational querying, controlled data manipulation, integrity constraints, validation and a small local Flask interface that reads the database in read-only mode.
 
