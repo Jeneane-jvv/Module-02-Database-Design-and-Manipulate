@@ -1,0 +1,19 @@
+{
+  "database_sha256": "beb250b4560bea2240f4e77e66ac433b376af3ab2d40c802a301338a856e594b",
+  "full_export_sha256": "d39ac930f8313ac8c00d9c714071f6bfff4e20332ce8f13b27d9962735f94bf3",
+  "data_only_export_sha256": "6d9323fdf3a6c67efd1d7222f0712af111288c5507b01b30502afe10d97f44e5",
+  "integrity_check": "ok",
+  "foreign_key_violations": 0,
+  "counts": {
+    "users": 5,
+    "scenarios": 3,
+    "evidence_items": 9,
+    "cause_options": 12,
+    "attempts": 3,
+    "investigation_steps": 8,
+    "cause_assessments": 6,
+    "feedback": 1
+  },
+  "round_trip_full_export": "PASS",
+  "round_trip_data_only_export": "PASS"
+}

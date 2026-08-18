@@ -1,0 +1,10 @@
+# Keep repository text files consistent across Windows development and Linux deployment.
+* text=auto
+*.py text eol=lf
+*.sql text eol=lf
+*.md text eol=lf
+*.mmd text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf

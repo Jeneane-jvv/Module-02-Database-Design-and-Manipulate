@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="FirstCommit Data Studio — a read-only Flask dashboard backed by the validated Project 02 SQLite database."
+    >
+    <title>FirstCommit Data Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">FC</div>
+                <div>
+                    <h1>FirstCommit</h1>
+                    <p>Data Studio</p>
+                </div>
+            </div>
+
+            <nav class="navigation" aria-label="Primary navigation">
+                <a href="#overview" class="nav-item active">Overview</a>
+                <a href="#scenarios" class="nav-item">Scenarios</a>
+                <a href="#attempts" class="nav-item">Attempts</a>
+                <a href="#architecture" class="nav-item">Architecture</a>
+                <a href="#status" class="nav-item">Validation</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Project 02</p>
+                <span>Database Design &amp; Manipulation</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Software Engineering Portfolio</p>
+                    <h2>Database Operations Dashboard</h2>
+                </div>
+
+                <div class="connection-badge">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    SQLite connected · read-only
+                </div>
+            </header>
+
+            <section id="overview" class="hero">
+                <div class="hero-copy">
+                    <p class="section-label">Validated relational data layer</p>
+                    <h3>From system design to working database evidence.</h3>
+                    <p>
+                        FirstCommit Data Studio reads the validated Project 02 SQLite database
+                        through a controlled Flask data-access layer. The dashboard values and
+                        relational views below are queried from <code>firstcommit.db</code> when
+                        the page loads.
+                    </p>
+                </div>
+
+                <div class="hero-status">
+                    <span class="hero-status-label">Database status</span>
+                    <strong>Operational</strong>
+                    <p>Connection mode: <code>read-only</code></p>
+                    <p>Data source: <code>database/firstcommit.db</code></p>
+                </div>
+            </section>
+
+            <section class="dashboard-section" aria-labelledby="metrics-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Live database metrics</p>
+                        <h3 id="metrics-title">Current data overview</h3>
+                    </div>
+                    <p>Counts are calculated from SQLite on each request.</p>
+                </div>
+
+                <div class="metric-grid">
+                    <article class="metric-card">
+                        <span class="metric-label">Active Scenarios</span>
+                        <strong>{{ metrics["active_scenarios"] }}</strong>
+                        <p>Engineering scenarios currently available.</p>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Evidence Items</span>
+                        <strong>{{ metrics["evidence_items"] }}</strong>
+                        <p>Technical evidence records stored across scenarios.</p>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Attempts</span>
+                        <strong>{{ metrics["attempts"] }}</strong>
+                        <p>Learner investigation attempts recorded.</p>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Investigation Steps</span>
+                        <strong>{{ metrics["investigation_steps"] }}</strong>
+                        <p>Chronological reasoning actions captured.</p>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Cause Assessments</span>
+                        <strong>{{ metrics["cause_assessments"] }}</strong>
+                        <p>Possible causes evaluated against evidence.</p>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-label">Feedback Records</span>
+                        <strong>{{ metrics["feedback_records"] }}</strong>
+                        <p>Reviewer feedback linked to investigation attempts.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="scenarios" class="dashboard-section" aria-labelledby="scenarios-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Relational view</p>
+                        <h3 id="scenarios-title">Scenario overview</h3>
+                    </div>
+                    <p>Scenario ownership and child-record counts are resolved with SQL joins.</p>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Difficulty</th>
+                                    <th>Status</th>
+                                    <th>Created by</th>
+                                    <th>Evidence</th>
+                                    <th>Attempts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for scenario in scenarios %}
+                                <tr>
+                                    <td class="primary-cell">{{ scenario["title"] }}</td>
+                                    <td><span class="tag">{{ scenario["difficulty"] }}</span></td>
+                                    <td><span class="status-pill">{{ scenario["status"] }}</span></td>
+                                    <td>{{ scenario["created_by"] }}</td>
+                                    <td>{{ scenario["evidence_count"] }}</td>
+                                    <td>{{ scenario["attempt_count"] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="attempts" class="dashboard-section" aria-labelledby="attempts-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Investigation activity</p>
+                        <h3 id="attempts-title">Learner attempts</h3>
+                    </div>
+                    <p>The interface exposes readable business information instead of raw IDs.</p>
+                </div>
+
+                <div class="attempt-grid">
+                    {% for attempt in attempts %}
+                    <article class="attempt-card">
+                        <div class="attempt-card-top">
+                            <span class="attempt-id">Attempt {{ attempt["attempt_id"] }}</span>
+                            <span class="status-pill status-{{ attempt["status"]|replace('_', '-') }}">
+                                {{ attempt["status"]|replace('_', ' ') }}
+                            </span>
+                        </div>
+                        <h4>{{ attempt["learner"] }}</h4>
+                        <p class="attempt-scenario">{{ attempt["scenario"] }}</p>
+                        <dl>
+                            <div>
+                                <dt>Started</dt>
+                                <dd>{{ attempt["started_at"] }}</dd>
+                            </div>
+                            <div>
+                                <dt>Completed</dt>
+                                <dd>{{ attempt["completed_at"] or "In progress" }}</dd>
+                            </div>
+                        </dl>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section id="architecture" class="dashboard-section" aria-labelledby="architecture-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Data flow</p>
+                        <h3 id="architecture-title">Application architecture</h3>
+                    </div>
+                </div>
+
+                <div class="architecture-flow">
+                    <div class="architecture-node">
+                        <span>01</span>
+                        <strong>Browser</strong>
+                        <p>Requests the local dashboard.</p>
+                    </div>
+                    <div class="flow-arrow" aria-hidden="true">→</div>
+                    <div class="architecture-node">
+                        <span>02</span>
+                        <strong>Flask</strong>
+                        <p>Handles the route and renders Jinja.</p>
+                    </div>
+                    <div class="flow-arrow" aria-hidden="true">→</div>
+                    <div class="architecture-node">
+                        <span>03</span>
+                        <strong>database.py</strong>
+                        <p>Executes controlled read-only SQL.</p>
+                    </div>
+                    <div class="flow-arrow" aria-hidden="true">→</div>
+                    <div class="architecture-node">
+                        <span>04</span>
+                        <strong>SQLite</strong>
+                        <p>Returns validated FirstCommit data.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="status" class="dashboard-section" aria-labelledby="status-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Validation state</p>
+                        <h3 id="status-title">Project 02 database gate</h3>
+                    </div>
+                </div>
+
+                <div class="status-panel">
+                    <div class="status-item"><span>Database connection</span><strong class="pass">PASS</strong></div>
+                    <div class="status-item"><span>Read-only application access</span><strong class="pass">ENABLED</strong></div>
+                    <div class="status-item"><span>SQLite integrity check</span><strong class="pass">PASS</strong></div>
+                    <div class="status-item"><span>Foreign-key check</span><strong class="pass">PASS</strong></div>
+                    <div class="status-item"><span>Constraint validation evidence</span><strong class="pass">RECORDED</strong></div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>FirstCommit Data Studio <span>•</span> Project 02 — Database Design and Manipulation</p>
+                <p>SQLite + Python + Flask</p>
+            </footer>
+        </main>
+    </div>
+ <script>
+    const navItems = document.querySelectorAll(".nav-item");
+
+    const sectionIds = [
+        "overview",
+        "scenarios",
+        "attempts",
+        "architecture",
+        "status"
+    ];
+
+    const sections = sectionIds
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+
+    function setActiveNavigation(sectionId) {
+        navItems.forEach((item) => {
+            const href = item.getAttribute("href");
+
+            const target = href.startsWith("#")
+                ? href.substring(1)
+                : "overview";
+
+            item.classList.toggle(
+                "active",
+                target === sectionId
+            );
+        });
+    }
+
+
+    function updateNavigationFromScroll() {
+        const marker =
+            window.innerHeight * 0.38;
+
+        let activeSection = null;
+        let closestDistance = Infinity;
+
+        sections.forEach((section) => {
+            const rect =
+                section.getBoundingClientRect();
+
+            if (
+                rect.top <= marker &&
+                rect.bottom > marker
+            ) {
+                activeSection = section.id;
+            }
+
+            const distance =
+                Math.abs(rect.top - marker);
+
+            if (
+                activeSection === null &&
+                distance < closestDistance
+            ) {
+                closestDistance = distance;
+                activeSection = section.id;
+            }
+        });
+
+        if (activeSection) {
+            setActiveNavigation(activeSection);
+
+            const newHash =
+                `#${activeSection}`;
+
+            if (
+                window.location.hash !== newHash
+            ) {
+                history.replaceState(
+                    null,
+                    "",
+                    newHash
+                );
+            }
+        }
+    }
+
+
+    navItems.forEach((item) => {
+        item.addEventListener(
+            "click",
+            () => {
+                const href =
+                    item.getAttribute("href");
+
+                const target =
+                    href.startsWith("#")
+                        ? href.substring(1)
+                        : "overview";
+
+                setActiveNavigation(target);
+            }
+        );
+    });
+
+
+    window.addEventListener(
+        "scroll",
+        updateNavigationFromScroll,
+        { passive: true }
+    );
+
+    window.addEventListener(
+        "resize",
+        updateNavigationFromScroll
+    );
+
+    window.addEventListener(
+        "DOMContentLoaded",
+        updateNavigationFromScroll
+    );
+</script>
+</body>
+</html>

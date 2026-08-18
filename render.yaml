@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: firstcommit-data-studio
+    runtime: python
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir app app:app
+
+    healthCheckPath: /health
